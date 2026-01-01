@@ -1,0 +1,106 @@
+<!doctype html>
+<html>
+
+<head>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
+    <link rel="stylesheet" href="/index.css" />
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
+    <script type="module" src="./index.js"></script>
+
+</head>
+
+<body>
+    <main>
+        <section id="section-color">
+            <div id="color-1" class="color-wrapper">
+                <div class="color-result"></div>
+                <div class="color-inputs">
+                    <sl-range label="H" class="input-h" min="0" max="360" step="1" tooltip="none"></sl-range>
+
+
+                    <div class="div-s">
+                        <sl-range label="S" class="range-s" min="0" max="100" step="1" tooltip="none"></sl-range>
+                        <sl-input class="input-s" size="small" min="0" max="100" type="number"></sl-input>
+                    </div>
+
+                    <div class="div-v">
+                        <sl-range label="V" class="range-v" min="0" max="100" step="1" tooltip="none"></sl-range>
+                        <sl-input class="input-v" size="small" min="0" max="100" type="number"></sl-input>
+                    </div>
+                </div>
+            </div>
+
+            <div id="color-2" class="color-wrapper">
+                <div class="color-result"></div>
+                <div class="color-inputs">
+                    <sl-range label="H" class="input-h" min="0" max="360" step="1" tooltip="none"></sl-range>
+
+
+                    <div class="div-s">
+                        <sl-range label="S" class="range-s" min="0" max="100" step="1" tooltip="none"></sl-range>
+                        <sl-input class="input-s" size="small" min="0" max="100" type="number"></sl-input>
+                    </div>
+
+                    <div class="div-v">
+                        <sl-range label="V" class="range-v" min="0" max="100" step="1" tooltip="none"></sl-range>
+                        <sl-input class="input-v" size="small" min="0" max="100" type="number"></sl-input>
+                    </div>
+                </div>
+            </div>
+
+            <div id="color-3" class="color-wrapper">
+                <div class="color-result"></div>
+                <div class="color-inputs">
+                    <sl-range label="H" class="input-h" min="0" max="360" step="1" tooltip="none"></sl-range>
+
+
+                    <div class="div-s">
+                        <sl-range label="S" class="range-s" min="0" max="100" step="1" tooltip="none"></sl-range>
+                        <sl-input class="input-s" size="small" min="0" max="100" type="number"></sl-input>
+                    </div>
+
+                    <div class="div-v">
+                        <sl-range label="V" class="range-v" min="0" max="100" step="1" tooltip="none"></sl-range>
+                        <sl-input class="input-v" size="small" min="0" max="100" type="number"></sl-input>
+                    </div>
+                </div>
+            </div>
+
+            <div id="color-4" class="color-wrapper">
+                <div class="color-result"></div>
+                <div class="color-inputs">
+                    <sl-range label="H" class="input-h" min="0" max="360" step="1" tooltip="none"></sl-range>
+
+
+                    <div class="div-s">
+                        <sl-range label="S" class="range-s" min="0" max="100" step="1" tooltip="none"></sl-range>
+                        <sl-input class="input-s" size="small" min="0" max="100" type="number"></sl-input>
+                    </div>
+
+                    <div class="div-v">
+                        <sl-range label="V" class="range-v" min="0" max="100" step="1" tooltip="none"></sl-range>
+                        <sl-input class="input-v" size="small" min="0" max="100" type="number"></sl-input>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <sl-dropdown>
+            <sl-button slot="trigger" >
+                <sl-icon src="/assets/icons/download.svg" slot="prefix"></sl-icon> Download</sl-button>
+            <sl-menu id="menu-download">
+                <sl-menu-item value="png-1" size="small" pill>PNG Image (1px)</sl-menu-item>
+                <sl-menu-item value="png-8" size="small" pill>PNG Image (8px)</sl-menu-item>
+                <sl-menu-item value="png-32" size="small" pill>PNG Image (32px)</sl-menu-item>
+                <sl-menu-item value="pal" size="small" pill>PAL File (JASC)</sl-menu-item>
+                <sl-menu-item value="photoshop-ase" size="small" pill>Photoshop ASE</sl-menu-item>
+                <sl-menu-item value="paint" size="small" pill>Paint.net TXT</sl-menu-item>
+                <sl-menu-item value="gimp" size="small" pill>GIMP GPL</sl-menu-item>
+                <sl-menu-item value="hex" size="small" pill>HEX File</sl-menu-item>
+            </sl-menu>
+        </sl-dropdown>
+    </main>
+</body>
+
+</html>

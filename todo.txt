@@ -1,0 +1,4 @@
+
+implement all download functions 
+
+Use a canvas to draw the image with the modifications made to it
