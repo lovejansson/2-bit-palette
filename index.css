@@ -177,3 +177,10 @@ sl-button {
 :not(:defined) {
   visibility: hidden;
 }
+
+canvas {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16/9;
+    image-rendering: pixelated;
+}

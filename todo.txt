@@ -1,4 +1,12 @@
+implement download .ase
 
-implement all download functions 
+Upload user's own image / use default 
 
-Use a canvas to draw the image with the modifications made to it
+Add about / contact info 
+
+Logo for tool [][][][]
+
+Create video snippet usage for social media 
+
+publish and test on mac / mobile and windows, firefox and chrome and safari ;-(
+Test the downloads on aseprite, gimp, paint, and others

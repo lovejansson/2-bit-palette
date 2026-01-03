@@ -1,0 +1,21 @@
+{
+  "name": "2-bit-palette",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "typescript": "~5.9.3",
+    "vite": "^7.2.4"
+  },
+  "dependencies": {
+    "@shoelace-style/shoelace": "^2.20.1",
+    "color-convert": "^3.1.3",
+    "install": "^0.13.0",
+    "npm": "^11.7.0"
+  }
+}

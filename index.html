@@ -5,7 +5,7 @@
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
     <link rel="stylesheet" href="/index.css" />
-    <script type="module" src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/shoelace-autoloader.js"></script>
+
     <script type="module" src="./index.js"></script>
 
 </head>
@@ -87,7 +87,7 @@
         </section>
 
         <sl-dropdown>
-            <sl-button slot="trigger" >
+            <sl-button slot="trigger">
                 <sl-icon src="/assets/icons/download.svg" slot="prefix"></sl-icon> Download</sl-button>
             <sl-menu id="menu-download">
                 <sl-menu-item value="png-1" size="small" pill>PNG Image (1px)</sl-menu-item>
@@ -100,6 +100,8 @@
                 <sl-menu-item value="hex" size="small" pill>HEX File</sl-menu-item>
             </sl-menu>
         </sl-dropdown>
+
+        <canvas></canvas>
     </main>
 </body>
 
