@@ -279,12 +279,6 @@ canvas {
     image-rendering: pixelated;
 }
 
-@media screen and (min-width: 767px) and (max-width: 1800px) {
-    canvas {
-        max-width: 600px;
-    }
-}
-
 
 #section-color {
     display: grid;
@@ -325,6 +319,17 @@ sl-button {
 
 }
 
+@media screen and (max-width: 2000px) {
+    canvas {
+        max-width: 800px;
+    }
+}
+
+@media screen and (max-width: 1500px) {
+    canvas {
+        max-width: 600px;
+    }
+}
 
 @media screen and (max-width: 767px){
     sl-input[type=number] {
