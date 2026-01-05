@@ -273,11 +273,11 @@ main {
     padding: 1rem;
 }
 
-@media screen and (max-width: 2000px) and (min-width: 767px) {
-    main {
-    max-width: 45dvw;
-}
-
+canvas {
+    width: 100%;
+    max-width: 800px;
+    aspect-ratio: 16/9;
+    image-rendering: pixelated;
 }
 
 
@@ -300,12 +300,6 @@ sl-button {
     align-items: flex-end;
 }
 
-canvas {
-    width: 100%;
-    height: auto;
-    aspect-ratio: 16/9;
-    image-rendering: pixelated;
-}
 
 
 
