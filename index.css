@@ -188,6 +188,10 @@ html, body{
   background-color: var(--color-1);
 }
 
+p {
+    text-align: left;
+}
+
 li {
     list-style-type: none;
 }
@@ -263,15 +267,15 @@ main {
     align-items: center;
     padding-top: 1rem;
     width: 100%;
-     max-width: 1080px;
+    max-width: 1080px;
     margin: 0 auto;
     gap: 2rem;
     padding: 1rem;
 }
 
-@media screen and (max-width: 1500px) and (min-width: 767px) {
+@media screen and (max-width: 2000px) and (min-width: 767px) {
     main {
-    max-width: 50dvw;
+    max-width: 45dvw;
 }
 
 }
@@ -304,9 +308,7 @@ canvas {
 }
 
 
-sl-dropdown {
-    display: none;
-}
+
 #dialog-tag #info {
     display: flex;
     flex-direction: column;
