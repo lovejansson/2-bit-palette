@@ -2,8 +2,9 @@ import ColorConvert, { type HSV } from 'color-convert';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 setBasePath('/node_modules/@shoelace-style/shoelace/dist');
 import { SlDialog, SlInput, type SlInputEvent, SlMenu, SlRange } from '@shoelace-style/shoelace';
-import { createAsePalette, createGimpPalette, createHexPalette, createJASCPALPalette, createPaintPalette, createPNGPalette, type PaletteColor } from './palette';
+import { createAsePalette, createGimpPalette, createHexPalette, createJASCPALPalette, createPaintPalette, createPNGPalette, type PaletteColor } from './src/palette';
 
+const BASE_URL = import.meta.env.VITE_BASE_PATH;
 
 main();
 
@@ -41,7 +42,7 @@ async function main() {
 
     if (ctx === null) throw new Error("ctx is null");
 
-    const image = await loadImage("/assets/images/board-mini.png");
+    const image = await loadImage(`/tools/2-bit-palette/assets/images/board-mini.png`);
 
     const { indices, colors } = createColorIndices(image);
 
