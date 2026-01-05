@@ -1,12 +1,8 @@
-implement download .ase
-
 Upload user's own image / use default 
-
-Add about / contact info 
-
-Logo for tool [][][][]
-
-Create video snippet usage for social media 
 
 publish and test on mac / mobile and windows, firefox and chrome and safari ;-(
 Test the downloads on aseprite, gimp, paint, and others
+
+Create video snippet usage for social media 
+
+

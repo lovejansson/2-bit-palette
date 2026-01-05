@@ -1,9 +1,14 @@
 <!doctype html>
-<html>
+<html class="sl-theme-light">
 
 <head>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Silkscreen:wght@400;700&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/light.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.20.1/cdn/themes/dark.css" />
     <link rel="stylesheet" href="/index.css" />
 
     <script type="module" src="./index.js"></script>
@@ -11,6 +16,15 @@
 </head>
 
 <body>
+    <header>
+        <h1>2-bit palette</h1>
+        <section id="section-site-settings">
+            <sl-icon-button id="btn-sun" style="font-size: 1.5rem;display:none;" src="/assets/icons/sun-alt.svg" label="About"></sl-icon-button>
+            <sl-icon-button id="btn-moon" style="font-size: 1.5rem;" src="/assets/icons/moon-stars.svg" label="About"></sl-icon-button>
+            <sl-icon-button id="btn-about" style="font-size: 1.5rem;" src="/assets/icons/info.svg" label="About"></sl-icon-button>
+        </section>
+
+    </header>
     <main>
         <section id="section-color">
             <div id="color-1" class="color-wrapper">
@@ -20,6 +34,7 @@
 
 
                     <div class="div-s">
+              
                         <sl-range label="S" class="range-s" min="0" max="100" step="1" tooltip="none"></sl-range>
                         <sl-input class="input-s" size="small" min="0" max="100" type="number"></sl-input>
                     </div>
@@ -103,6 +118,53 @@
 
         <canvas></canvas>
     </main>
+
+    <sl-dialog id="dialog-tag" label="2-bit palette">
+        <div id="info">
+            <p>
+                A 2-bit palette is a color palette that contains four colors and is commonly used in pixel art with a Game Boy-style aesthetic. The name <q>2-bit</q> comes from the fact that it takes 2 bits to store four colors in a computer, since 2<sup>2</sup>                = 4.
+            </p>
+
+            <p>
+                This tool allows users to select colors for such a palette. It uses the HSV color model, making it easy to adjust hue, saturation, and value separately and see how these changes affect the result.
+            </p>
+
+            <p>
+                The palette can be exported in several different formats. However, since I don't personally use all of these formats, please contact me if anything doesn't work as expected.
+            </p>
+        </div>
+
+        <div id="footer" slot="footer">
+            <p>Created by <a href="https://pimpixels.com" target="_blank">pimpixels</a></p>
+            <ul>
+                <li>
+                    <a href="https://x.com/pimpixels/" target="_blank">
+                        <sl-icon src="/assets/icons/x.svg"></sl-icon>
+                        </template>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://bsky.app/profile/pimpixels.bsky.social/" target="_blank">
+                        <sl-icon src="/assets/icons/bsky.svg"></sl-icon>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://www.instagram.com/pimpixels/" target="_blank">
+                        <sl-icon src="/assets/icons/insta.svg"></sl-icon>
+                    </a>
+                </li>
+                <li>
+                    <a href="https://github.com/lovejansson/" target="_blank">
+                        <sl-icon src="/assets/icons/github.svg"></sl-icon>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+    </sl-dialog>
+
 </body>
+
+
 
 </html>

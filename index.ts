@@ -1,8 +1,8 @@
 import ColorConvert, { type HSV } from 'color-convert';
 import { setBasePath } from '@shoelace-style/shoelace/dist/utilities/base-path.js';
 setBasePath('/node_modules/@shoelace-style/shoelace/dist');
-import { SlInput, type SlInputEvent, SlMenu, SlRange } from '@shoelace-style/shoelace';
-import { createGimpPalette, createHexPalette, createJASCPALPalette, createPaintPalette, createPNGPalette, type PaletteColor } from './palette';
+import { SlDialog, SlInput, type SlInputEvent, SlMenu, SlRange } from '@shoelace-style/shoelace';
+import { createAsePalette, createGimpPalette, createHexPalette, createJASCPALPalette, createPaintPalette, createPNGPalette, type PaletteColor } from './palette';
 
 
 main();
@@ -24,24 +24,53 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 async function main() {
-    const image = await loadImage("/assets/images/board-mini.png");
 
-
-
-    const {indices, colors} = createColorIndices(image);
 
     const menuDownload: SlMenu | null = document.getElementById("menu-download") as SlMenu | null;
 
     const canvas = document.querySelector("canvas");
+    const btnAbout = document.getElementById("btn-about");
+    const btnSun = document.getElementById("btn-sun");
+    const btnMoon = document.getElementById("btn-moon");
+    const dialogTag: SlDialog | null = document.getElementById("dialog-tag") as SlDialog | null;
 
 
-    if (menuDownload === null || canvas === null) throw new Error("Missing DOM");
+    if (menuDownload === null || canvas === null || btnAbout === null || dialogTag === null || btnMoon === null || btnSun === null) throw new Error("Missing DOM");
 
-    canvas.width = image.width;
-    canvas.height = image.height
     const ctx = canvas.getContext("2d");
 
     if (ctx === null) throw new Error("ctx is null");
+
+    const image = await loadImage("/assets/images/board-mini.png");
+
+    const { indices, colors } = createColorIndices(image);
+
+    canvas.width = image.width;
+    canvas.height = image.height
+
+    btnAbout.addEventListener("click", () => {
+        dialogTag.show();
+    });
+
+    btnSun.addEventListener("click", () => {
+        document.querySelector("html")?.classList.add("sl-theme-light");
+        document.querySelector("html")?.classList.remove("sl-theme-dark");
+        btnSun.style.display = "none";
+        btnMoon.style.display = "block";
+    });
+
+
+    btnMoon.addEventListener("click", () => {
+        document.querySelector("html")?.classList.add("sl-theme-dark");
+        document.querySelector("html")?.classList.remove("sl-theme-light");
+        btnSun.style.display = "block";
+        btnMoon.style.display = "none";
+    });
+
+    if (matchMedia("(prefers-color-scheme: dark)")) {
+        btnMoon.click();
+    }
+
 
     ctx.drawImage(image, 0, 0);
 
@@ -49,6 +78,8 @@ async function main() {
     menuDownload.addEventListener("sl-select", (e) => {
         downloadPalette(colors, e.detail.item.value);
     });
+
+
 
     for (const c of colors) {
 
@@ -64,7 +95,18 @@ async function main() {
         const inputV: SlInput | null = colorWrapper.querySelector(".input-v");
         const rangeV: SlRange | null = colorWrapper.querySelector(".range-v");
 
-        if (colorResult === null || inputH === null || inputS === null || inputV === null || rangeS === null || rangeV === null) throw new Error("Missing DOM: color " + c.num)
+
+        if (colorResult === null || inputH === null || inputS === null || inputV === null || rangeS === null || rangeV === null) throw new Error("Missing DOM: color " + c.num);
+
+        window.addEventListener("resize", () => {
+            if (window.innerWidth < 767) {
+                rangeS.tooltip = "top";
+                rangeV.tooltip = "top";
+            } else {
+                rangeS.tooltip = "none";
+                rangeV.tooltip = "none";
+            }
+        })
 
         inputH.addEventListener("sl-input", (e: SlInputEvent) => {
             if (e.target) {
@@ -167,6 +209,14 @@ async function main() {
         rangeV.value = c.hsv[2];
         inputV.value = c.hsv[2].toString();
 
+        if (window.innerWidth < 767) {
+            rangeS.tooltip = "top";
+            rangeV.tooltip = "top";
+        } else {
+            rangeS.tooltip = "none";
+            rangeV.tooltip = "none";
+        }
+
         updateColorResult(colorResult, c.hsv);
         updateCanvas(ctx, indices, colors);
     }
@@ -203,21 +253,23 @@ async function downloadPalette(colors: PaletteColor[], format: string) {
                 break;
             }
         case "pal":
-            const pal = await createJASCPALPalette(colors);
+            const pal = createJASCPALPalette(colors);
             download(pal, "pal")
             break;
         case "photoshop-ase":
+            const ase = createAsePalette(colors);
+            download(ase, "ase");
             break;
         case "paint":
-            const paint = await createPaintPalette(colors);
+            const paint = createPaintPalette(colors);
             download(paint, "txt");
             break;
         case "gimp":
-            const gimp = await createGimpPalette(colors);
+            const gimp = createGimpPalette(colors);
             download(gimp, "gpl")
             break;
         case "hex":
-            const hex = await createHexPalette(colors);
+            const hex = createHexPalette(colors);
             download(hex, "hex");
             break;
     }
@@ -229,7 +281,7 @@ function updateColorResult(el: HTMLDivElement, hsv: HSV) {
     el.style.backgroundColor = `hsl(${hsl[0]} ${hsl[1]}% ${hsl[2]}%)`;
 }
 
-function createColorIndices(image: HTMLImageElement): {colors: PaletteColor[], indices: number[] }{
+function createColorIndices(image: HTMLImageElement): { colors: PaletteColor[], indices: number[] } {
 
     const indices: number[] = [];
 
@@ -293,8 +345,8 @@ function createColorIndices(image: HTMLImageElement): {colors: PaletteColor[], i
 
     }
 
-    const paletteColors: PaletteColor[] =  colors.map((c, idx) => ({ num: idx + 1, hsv: c }));
-    return {indices, colors: paletteColors};
+    const paletteColors: PaletteColor[] = colors.map((c, idx) => ({ num: idx + 1, hsv: c }));
+    return { indices, colors: paletteColors };
 
 }
 

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+  <path d="
+    M4 2h16v2H4Z
+    M2 4h2v16H2Z
+    M20 4h2v16h-2Z
+    M16 6h2v2h-2Z
+    M9 7h6v2H9Z
+    M8 8h1v3H8Z
+    M15 8h1v3h-1Z
+    M7 9h1v7H7Z
+    M9 9h1v1H9Z
+    M14 9h1v1h-1Z
+    M16 9h1v7h-1Z
+    M6 10h1v5H6Z
+    M17 10h1v5h-1Z
+    M8 14h1v3H8Z
+    M15 14h1v3h-1Z
+    M9 15h1v3H9Z
+    M14 15h1v3h-1Z
+    M10 16h4v2h-4Z
+    M4 20h16v2H4Z
+  " fill="currentColor"/>
+</svg>
