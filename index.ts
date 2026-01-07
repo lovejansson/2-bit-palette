@@ -25,7 +25,7 @@ import "@shoelace-style/shoelace/dist/themes/dark.css";
 import "./index.css";
 
 registerIconLibrary('pixelarticons', {
-    resolver: (name: string) => `/assets/icons/${name}.svg`,
+    resolver: (name: string) => `${import.meta.env.BASE_URL}assets/icons/${name}.svg`,
     mutator: (svg: SVGElement) => svg.setAttribute('fill', 'currentColor')
 });
 
