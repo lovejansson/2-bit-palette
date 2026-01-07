@@ -4,7 +4,6 @@ setBasePath('/node_modules/@shoelace-style/shoelace/dist');
 import { SlDialog, SlInput, type SlInputEvent, SlMenu, SlRange } from '@shoelace-style/shoelace';
 import { createAsePalette, createGimpPalette, createHexPalette, createJASCPALPalette, createPaintPalette, createPNGPalette, type PaletteColor } from './src/palette';
 
-const BASE_URL = import.meta.env.VITE_BASE_PATH;
 
 main();
 
@@ -26,7 +25,6 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 
 async function main() {
 
-
     const menuDownload: SlMenu | null = document.getElementById("menu-download") as SlMenu | null;
 
     const canvas = document.querySelector("canvas");
@@ -42,7 +40,7 @@ async function main() {
 
     if (ctx === null) throw new Error("ctx is null");
 
-    const image = await loadImage(`/tools/2-bit-palette/assets/images/board-mini.png`);
+    const image = await loadImage(`${import.meta.env.BASE_URL}assets/images/board-mini.png`);
 
     const { indices, colors } = createColorIndices(image);
 
