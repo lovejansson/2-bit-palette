@@ -180,7 +180,7 @@ function createAsePalette(colors: PaletteColor[]): Blob {
         const view = new DataView(buffer);
         const bytes = new Uint8Array(buffer);
 
-        
+
         view.setUint16(offset, 1, false);
         offset += 2;
         view.setUint32(offset, blockDataSize, false);
@@ -209,4 +209,28 @@ function createAsePalette(colors: PaletteColor[]): Blob {
     return new Blob([concatBytes(...parts)], { type: "application/octet-stream" });
 }
 
-export { type PaletteColor, createGimpPalette, createJASCPALPalette, createPaintPalette, createHexPalette, createPNGPalette, createAsePalette }
+type LospecPalette = {
+    name: string;
+    author: string;
+    colors: string[];
+}
+
+
+async function searchLospecPalette(name: string): Promise<LospecPalette | null> {
+    try {
+        const res = await fetch(`https://lospec.com/palette-list/${name}.json`);
+
+        if (res.ok) {
+            const json = await res.json();
+            return json as LospecPalette;
+        } else {
+            console.error(res.statusText);
+            return null;
+        }
+    } catch (e) {
+        console.error(e);
+        return null;
+    }
+}
+
+export { type PaletteColor, createGimpPalette, createJASCPALPalette, createPaintPalette, createHexPalette, createPNGPalette, createAsePalette, searchLospecPalette, type LospecPalette }

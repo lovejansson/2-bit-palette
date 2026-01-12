@@ -4,11 +4,8 @@
 .sl-theme-light {
   font-family: 'Source Code Pro', monospace;
   --color-0: #363636;
-  --color-3: #ffffff; 
   --color-1: #ececec;
-
-    --color-4: #d2d3d4; /* intermediate for hover backgrounds */
-  --color-2: #b5b7b9; /* intermediate for hover backgrounds */
+  --color-2: #b5b7b9; 
  
 --sl-color-primary-50: var(--color-1);
 --sl-color-primary-100: var(--color-1);
@@ -96,6 +93,7 @@
   --color-0: #ececec;
   --color-1: #363636;
   --color-2: #1a1a1a; 
+  --color-3: #afafaf; 
 
 --sl-color-primary-50: var(--color-1);
 --sl-color-primary-100: var(--color-1);
@@ -163,15 +161,15 @@
   --sl-input-focus-ring-color:var(--sl-focus-ring-color);
   --sl-focus-ring-offset: 1px;
 
-    --sl-input-color: var(--sl-color-neutral-700);
+ --sl-input-color: var(--sl-color-neutral-700);
   --sl-input-color-hover: var(--sl-color-neutral-700);
   --sl-input-color-focus: var(--sl-color-neutral-700);
   --sl-input-color-disabled: var(--sl-color-neutral-900);
   --sl-input-icon-color: var(--sl-color-neutral-500);
   --sl-input-icon-color-hover: var(--sl-color-neutral-600);
   --sl-input-icon-color-focus: var(--sl-color-neutral-600);
-  --sl-input-placeholder-color: var(--color-2);
-  --sl-input-placeholder-color-disabled: var(--color-2);
+  --sl-input-placeholder-color: var(--color-3);
+  --sl-input-placeholder-color-disabled: var(--color-3);
  --sl-input-label-color: var(var(--color-0));
   --sl-input-border-color: var(--color-2);
 
@@ -200,6 +198,10 @@ a {
     color: var(--color-0)
 }
 
+.display-none {
+    display: none !important;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -223,6 +225,7 @@ a {
     gap: 1.6rem;
     justify-content: stretch;
     flex-direction: column;
+    width: 100%;
 }
 
 
@@ -232,12 +235,12 @@ sl-range {
     --thumb-size: 1.2rem; 
 }
 
-.input-h {
+.range-h {
      --track-color-active: transparent;
     --track-color-inactive: transparent;
 }
 
-.input-h::part(input) {
+.range-h::part(input) {
 
     background-image: linear-gradient(90deg in hsl longer hue, red, blue); 
     border-radius: 0;
@@ -285,6 +288,7 @@ canvas {
     grid-template-columns: repeat(4, 1fr);
     gap: 2rem;
     justify-content: center; 
+    align-self: stretch;
 }
 
 sl-button {
@@ -317,6 +321,50 @@ sl-button {
     display: flex;
     gap: 1rem;
 
+}
+
+#section-palette {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 2rem;
+    align-self: stretch;
+}
+
+#section-lospec-search {
+    display: flex;
+    gap: 2rem;
+    align-items: flex-start;
+    flex-wrap: wrap;
+}
+
+#lospec-search-box {
+    display: flex;
+    gap: 0.5rem;
+}
+
+#lospec-search-result {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+#lospec-palette-info {
+    display: flex;
+    flex-direction: column;
+}
+
+#lospec-search-error {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    height: 100%;
+}
+
+
+#lospec-palette {
+    height: 2.4rem;
+    width: calc(2.4rem * 4);
 }
 
 @media screen and (max-width: 2000px) {
