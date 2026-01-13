@@ -176,6 +176,20 @@
   
 }
 
+#theme-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  pointer-events: none;
+  opacity: 0;
+  background: var(--color-0);
+}
+
+/* Visible only during switch */
+html.theme-switching #theme-mask {
+  opacity: 1;
+}
+
 html, body{
     height: 100%;
     width: 100%;
@@ -198,8 +212,26 @@ a {
     color: var(--color-0)
 }
 
-.display-none {
-    display: none !important;
+:not(:defined) {
+    visibility: hidden !important;
+}
+
+.hidden{
+    visibility: hidden !important;
+    height: 0px;
+    width: 0px;
+    margin: 0;
+    padding: 0;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 * {
@@ -355,12 +387,8 @@ sl-button {
 }
 
 #lospec-search-error {
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    height: 100%;
+    --sl-spacing-large: 0.5rem;
 }
-
 
 #lospec-palette {
     height: 2.4rem;

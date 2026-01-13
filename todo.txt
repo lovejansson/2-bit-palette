@@ -1,3 +1,7 @@
-Upload user's own image / use default 
 
-Error UI 
+
+Upload user's own image / use default
+
+Edit Error UI based on this
+
+
