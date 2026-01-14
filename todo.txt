@@ -1,9 +1,7 @@
-Upload user's own image / use default 
 
-Error UI 
 
-Loading UI
+Upload user's own image / use default
 
-Display none until fully initialized
+Edit Error UI based on this
 
-Refactor and clean 
+

@@ -8,16 +8,32 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Silkscreen:wght@400;700&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
     <script type="module" src="./index.js"></script>
+
+    <style>
+        /* Initially hide hidden elements to prevent intial flicker */
+        .hidden {
+            visibility: hidden !important;
+        }
+    </style>
+
+    <script>
+        // Initialize theme before DOM Render to prevent initial flicker
+        (() => {
+            const dark = localStorage.getItem("theme") !== "light" && matchMedia("(prefers-color-scheme: dark)");
+            if (dark) {
+                document.documentElement.classList.add("sl-theme-dark");
+                document.documentElement.classList.remove("sl-theme-light");
+            }
+        })();
+    </script>
 </head>
 
-<body>
+<body class="hidden">
     <header>
         <h1>2-bit palette</h1>
         <section id="section-site-settings">
-            <sl-icon-button id="btn-sun" library="pixelarticons" style="font-size: 1.5rem; display: none" name="sun-alt" label="About"></sl-icon-button>
-
+            <sl-icon-button id="btn-sun" library="pixelarticons" style="font-size: 1.5rem;" name="sun-alt" label="About"></sl-icon-button>
             <sl-icon-button id="btn-moon" library="pixelarticons" style="font-size: 1.5rem" name="moon-stars" label="About"></sl-icon-button>
-
             <sl-icon-button id="btn-about" library="pixelarticons" style="font-size: 1.5rem" name="info" label="About"></sl-icon-button>
         </section>
     </header>
@@ -98,10 +114,11 @@
                     <sl-input id="input-lospec-search" placeholder="Search Lospec palette" help-text="Search lospec palette by name in url."></sl-input>
                     <sl-button id="btn-lospec-search" aria-label="Search">
                         <sl-icon slot="prefix" name="search" library="pixelarticons"></sl-icon>
+                        <sl-icon slot="prefix" name="loader" library="pixelarticons" class="spinner hidden"></sl-icon>
                     </sl-button>
                 </div>
 
-                <div id="lospec-search-result" class="display-none">
+                <div id="lospec-search-result" class="hidden">
                     <div id="lospec-palette-info">
                         <p id="lospec-palette-name"></p>
                         <p id="lospec-palette-author"></p>
@@ -110,9 +127,10 @@
                     <sl-button id="btn-apply-lospec-palette">Apply</sl-button>
                 </div>
 
-                <div id="lospec-search-error" class="display-none">
-                    <p id="lospec-error"></p>
-                </div>
+                <sl-alert variant="danger" id="lospec-search-error" closable>
+                    
+                </sl-alert>
+             
             </section>
             <sl-dropdown id="download">
                 <sl-button  slot="trigger">
