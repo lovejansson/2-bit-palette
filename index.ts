@@ -56,9 +56,6 @@ function applyLospecPalette(palette: LospecPalette, colors: PaletteColor[], ctx:
 
     lospecHSVColors.sort((c1, c2) => c1[2] - c2[2]);
 
-    console.log(lospecHSVColors);
-
-    console.log(colors);
     for (let i = 0; i < lospecHSVColors.length; ++i) {
         console.log(colors[i]);
         colors[i].hsv = lospecHSVColors[i];
@@ -140,7 +137,7 @@ async function main() {
 
     btnLospecSearch.addEventListener("click", async () => {
         if (inputLospecSearch.value) {
-            const palette = await searchLospecPalette(inputLospecSearch.value);
+            const palette = await searchLospecPalette(inputLospecSearch.value.toLowerCase().replaceAll(" ", "-"));
 
             if (palette) {
                 if (palette.colors.length !== 4) {

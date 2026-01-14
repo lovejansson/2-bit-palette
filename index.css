@@ -326,14 +326,23 @@ sl-button {
 #section-palette {
     display: flex;
     justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 2rem;
+    gap: 1rem;
     align-self: stretch;
+}
+
+@media  screen and (max-width: 767px) {
+    #section-palette {
+        flex-direction: column;
+    }
+ #download {
+        align-self: flex-end;
+    }
+    
 }
 
 #section-lospec-search {
     display: flex;
-    gap: 2rem;
+    gap: 1rem;
     align-items: flex-start;
     flex-wrap: wrap;
 }
@@ -345,13 +354,14 @@ sl-button {
 
 #lospec-search-result {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
     align-items: center;
 }
 
 #lospec-palette-info {
     display: flex;
     flex-direction: column;
+    font-size: 0.8rem;
 }
 
 #lospec-search-error {
