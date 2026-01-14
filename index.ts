@@ -181,7 +181,7 @@ async function main() {
       btnLospecSearch.disabled = true;
       btnLospecSearch.children[0].classList.add("hidden");
       btnLospecSearch.children[1].classList.remove("hidden");
-      const res = await searchLospecPalette(inputLospecSearch.value);
+      const res = await searchLospecPalette(inputLospecSearch.value.toLowerCase().replaceAll(" ", "-"));
 
       if (res.isSuccess) {
         const palette = res.data;
