@@ -263,6 +263,7 @@ sl-range {
 .range-h {
      --track-color-active: transparent;
     --track-color-inactive: transparent;
+   
 }
 
 .range-h::part(input) {
@@ -401,21 +402,22 @@ sl-button {
     .color-wrapper {
         display: none;
     }
-
-    #section-color {
-        display: flex;
-    }
-}
-
-@media  screen and (max-width: 767px) {
-    #section-palette {
+       #section-palette {
         flex-direction: column;
     }
  #download {
         align-self: flex-end;
     }
-    
+
+    #section-color {
+        display: flex;
+    }
+    sl-range {
+    --track-height: 1.75rem;
+    --thumb-size: 2rem; 
 }
+}
+
 
 @media screen and (max-width: 2000px) {
     canvas {
