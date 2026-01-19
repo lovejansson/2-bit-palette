@@ -55,7 +55,8 @@ function applyLospecPalette(
   palette: LospecPalette,
   colors: PaletteColor[],
   ctx: CanvasRenderingContext2D,
-  indices: number[]
+  indices: number[],
+  isMobile: boolean
 ) {
   const lospecHSVColors = palette.colors.map((c) => ColorConvert.hex.hsv(c));
 
@@ -67,7 +68,7 @@ function applyLospecPalette(
   }
 
   for (const c of colors) {
-    updateColorHTML(c);
+    updateColorsUI(c, isMobile);
   }
 
   updateCanvas(ctx, indices, colors);
@@ -94,6 +95,142 @@ function switchTheme(theme: "dark" | "light") {
   }
 
   localStorage.setItem("theme", theme);
+}
+
+function initColorsUI(
+  colors: PaletteColor[],
+  indices: number[],
+  ctx: CanvasRenderingContext2D,
+  isMobile = false
+) {
+  for (const c of colors) {
+    const colorWrapper = document.getElementById(`color-${c.num}`);
+
+    if (colorWrapper === null) throw new Error("Missing DOM: color " + c.num);
+
+    const colorInputsWrapper = isMobile
+      ? colorWrapper.querySelector(".dialog-color")
+      : colorWrapper.querySelector(".color-wrapper");
+
+
+    if (colorInputsWrapper === null)
+      throw new Error("Missing DOM: color inputs " + c.num);
+
+    const inputH: SlRange | null = colorInputsWrapper.querySelector(".range-h");
+    const inputS: SlInput | null = colorInputsWrapper.querySelector(".input-s");
+    const rangeS: SlRange | null = colorInputsWrapper.querySelector(".range-s");
+    const inputV: SlInput | null = colorInputsWrapper.querySelector(".input-v");
+    const rangeV: SlRange | null = colorInputsWrapper.querySelector(".range-v");
+
+    if (
+      inputH === null ||
+      inputS === null ||
+      inputV === null ||
+      rangeS === null ||
+      rangeV === null
+    )
+      throw new Error("Missing DOM: color " + c.num);
+
+    // In mobile mode the color picker is inside of a dialog instead of directly on the page
+    if (isMobile) {
+      rangeS.tooltip = "top";
+      rangeV.tooltip = "top";
+
+      const btnColor = colorWrapper.querySelector(".btn-color");
+      const dialogColorPicker: SlDialog | null =
+        colorWrapper.querySelector(".dialog-color");
+      if (dialogColorPicker === null || btnColor === null)
+        throw new Error("Missing DOM: color " + c.num);
+
+      btnColor.addEventListener("click", () => {
+        dialogColorPicker.show();
+      });
+    } else {
+      rangeS.tooltip = "none";
+      rangeV.tooltip = "none";
+    }
+
+    // Setup all the eventlisteners
+
+    inputH.addEventListener("sl-input", (e: SlInputEvent) => {
+      if (e.target) {
+        c.hsv[0] = parseInt((e.target as SlInput).value);
+        updateColorsUI(c, isMobile);
+        updateCanvas(ctx, indices, colors);
+      }
+    });
+
+    inputS.addEventListener("sl-input", (e: SlInputEvent) => {
+      if (e.target) {
+        const value = (e.target as SlInput).value;
+
+        if (value === "") {
+          c.hsv[1] = 0;
+        } else if (parseInt(value) > 100) {
+          c.hsv[1] = 100;
+        } else {
+          c.hsv[1] = parseInt(value);
+        }
+
+        updateColorsUI(c, isMobile);
+        updateCanvas(ctx, indices, colors);
+      }
+    });
+
+    rangeS.addEventListener("sl-input", (e: SlInputEvent) => {
+      if (e.target) {
+        const value = (e.target as SlInput).value;
+
+        if (value === "") {
+          c.hsv[1] = 0;
+        } else if (parseInt(value) > 100) {
+          c.hsv[1] = 100;
+        } else {
+          c.hsv[1] = parseInt(value);
+        }
+
+        updateColorsUI(c, isMobile);
+        updateCanvas(ctx, indices, colors);
+      }
+    });
+
+    inputV.addEventListener("sl-input", (e: SlInputEvent) => {
+      if (e.target) {
+        const value = (e.target as SlInput).value;
+
+        if (value === "") {
+          c.hsv[2] = 0;
+        } else if (parseInt(value) > 100) {
+          c.hsv[2] = 100;
+        } else {
+          c.hsv[2] = parseInt(value);
+        }
+
+        updateColorsUI(c, isMobile);
+        updateCanvas(ctx, indices, colors);
+      }
+    });
+
+    rangeV.addEventListener("sl-input", (e: SlInputEvent) => {
+      if (e.target) {
+        const value = (e.target as SlInput).value;
+
+        if (value === "") {
+          c.hsv[2] = 0;
+        } else if (parseInt(value) > 100) {
+          c.hsv[2] = 100;
+        } else {
+          c.hsv[2] = parseInt(value);
+        }
+
+        updateColorsUI(c, isMobile);
+        updateCanvas(ctx, indices, colors);
+      }
+    });
+
+    updateColorsUI(c, isMobile);
+    updateCanvas(ctx, indices, colors);
+  }
 }
 
 async function main() {
@@ -154,15 +291,24 @@ async function main() {
 
   const { indices, colors } = createColorIndices(image);
 
+  let isMobile = window.innerWidth < 767;
+
   canvas.width = image.width;
   canvas.height = image.height;
+
+  initColorsUI(colors, indices, ctx, window.innerWidth < 767);
+
+  addEventListener("resize", () => {
+    isMobile = window.innerWidth < 767;
+    initColorsUI(colors, indices, ctx, isMobile);
+  });
 
   let lospecPalette: LospecPalette | null = null;
 
   btnApplyLospecPalette.addEventListener("click", () => {
     divLospecPalette.parentElement?.classList.add("hidden");
     if (lospecPalette !== null) {
-      applyLospecPalette(lospecPalette, colors, ctx, indices);
+      applyLospecPalette(lospecPalette, colors, ctx, indices, isMobile);
     }
   });
 
@@ -181,7 +327,9 @@ async function main() {
       btnLospecSearch.disabled = true;
       btnLospecSearch.children[0].classList.add("hidden");
       btnLospecSearch.children[1].classList.remove("hidden");
-      const res = await searchLospecPalette(inputLospecSearch.value.toLowerCase().replaceAll(" ", "-"));
+      const res = await searchLospecPalette(
+        inputLospecSearch.value.toLowerCase().trim().replaceAll(" ", "-")
+      );
 
       if (res.isSuccess) {
         const palette = res.data;
@@ -198,7 +346,7 @@ async function main() {
           divLospecPalette.parentElement?.classList.remove("hidden");
         }
       } else {
-        alertLospecError.textContent  = "Palette not found.";
+        alertLospecError.textContent = "Palette not found.";
         alertLospecError.show();
       }
       btnLospecSearch.disabled = false;
@@ -232,131 +380,9 @@ async function main() {
     downloadPalette(colors, e.detail.item.value);
   });
 
-  for (const c of colors) {
-    const colorWrapper = document.getElementById(`color-${c.num}`);
-
-    if (colorWrapper === null) throw new Error("Missing DOM: color " + c.num);
-
-    const colorResult: HTMLDivElement | null =
-      colorWrapper.querySelector(".color-result");
-    const inputH: SlRange | null = colorWrapper.querySelector(".range-h");
-
-    const inputS: SlInput | null = colorWrapper.querySelector(".input-s");
-    const rangeS: SlRange | null = colorWrapper.querySelector(".range-s");
-    const inputV: SlInput | null = colorWrapper.querySelector(".input-v");
-    const rangeV: SlRange | null = colorWrapper.querySelector(".range-v");
-
-    if (
-      colorResult === null ||
-      inputH === null ||
-      inputS === null ||
-      inputV === null ||
-      rangeS === null ||
-      rangeV === null
-    )
-      throw new Error("Missing DOM: color " + c.num);
-
-    window.addEventListener("resize", () => {
-      if (window.innerWidth < 767) {
-        rangeS.tooltip = "top";
-        rangeV.tooltip = "top";
-      } else {
-        rangeS.tooltip = "none";
-        rangeV.tooltip = "none";
-      }
-    });
-
-    inputH.addEventListener("sl-input", (e: SlInputEvent) => {
-      if (e.target) {
-        c.hsv[0] = parseInt((e.target as SlInput).value);
-        updateColorHTML(c);
-        updateCanvas(ctx, indices, colors);
-      }
-    });
-
-    inputS.addEventListener("sl-input", (e: SlInputEvent) => {
-      if (e.target) {
-        const value = (e.target as SlInput).value;
-
-        if (value === "") {
-          c.hsv[1] = 0;
-        } else if (parseInt(value) > 100) {
-          c.hsv[1] = 100;
-        } else {
-          c.hsv[1] = parseInt(value);
-        }
-
-        updateColorHTML(c);
-        updateCanvas(ctx, indices, colors);
-      }
-    });
-
-    rangeS.addEventListener("sl-input", (e: SlInputEvent) => {
-      if (e.target) {
-        const value = (e.target as SlInput).value;
-
-        if (value === "") {
-          c.hsv[1] = 0;
-        } else if (parseInt(value) > 100) {
-          c.hsv[1] = 100;
-        } else {
-          c.hsv[1] = parseInt(value);
-        }
-
-        updateColorHTML(c);
-        updateCanvas(ctx, indices, colors);
-      }
-    });
-
-    inputV.addEventListener("sl-input", (e: SlInputEvent) => {
-      if (e.target) {
-        const value = (e.target as SlInput).value;
-
-        if (value === "") {
-          c.hsv[2] = 0;
-        } else if (parseInt(value) > 100) {
-          c.hsv[2] = 100;
-        } else {
-          c.hsv[2] = parseInt(value);
-        }
-
-        updateColorHTML(c);
-        updateCanvas(ctx, indices, colors);
-      }
-    });
-
-    rangeV.addEventListener("sl-input", (e: SlInputEvent) => {
-      if (e.target) {
-        const value = (e.target as SlInput).value;
-
-        if (value === "") {
-          c.hsv[2] = 0;
-        } else if (parseInt(value) > 100) {
-          c.hsv[2] = 100;
-        } else {
-          c.hsv[2] = parseInt(value);
-        }
-
-        updateColorHTML(c);
-        updateCanvas(ctx, indices, colors);
-      }
-    });
-
-    if (window.innerWidth < 767) {
-      rangeS.tooltip = "top";
-      rangeV.tooltip = "top";
-    } else {
-      rangeS.tooltip = "none";
-      rangeV.tooltip = "none";
-    }
-
-    updateColorHTML(c);
-    updateCanvas(ctx, indices, colors);
-
-    requestAnimationFrame(() =>
-      document.querySelector("body")!.classList.remove("hidden")
-    );
-  }
+  requestAnimationFrame(() =>
+    document.querySelector("body")!.classList.remove("hidden")
+  );
 }
 
 function download(blob: Blob, extension: string) {
@@ -407,22 +433,27 @@ async function downloadPalette(colors: PaletteColor[], format: string) {
   }
 }
 
-function updateColorHTML(color: PaletteColor) {
+function updateColorsUI(color: PaletteColor, isMobile: boolean = false) {
   const colorWrapper = document.getElementById(`color-${color.num}`);
-
   if (colorWrapper === null) throw new Error("Missing DOM: color " + color.num);
 
-  const colorResult: HTMLDivElement | null =
-    colorWrapper.querySelector(".color-result");
-  const inputH: SlRange | null = colorWrapper.querySelector(".range-h");
+  const colorInputsWrapper = isMobile
+    ? colorWrapper.querySelector(".dialog-color")
+    : colorWrapper.querySelector(".color-wrapper");
 
-  const inputS: SlInput | null = colorWrapper.querySelector(".input-s");
-  const rangeS: SlRange | null = colorWrapper.querySelector(".range-s");
-  const inputV: SlInput | null = colorWrapper.querySelector(".input-v");
-  const rangeV: SlRange | null = colorWrapper.querySelector(".range-v");
+  if (colorInputsWrapper === null)
+    throw new Error("Missing DOM: color " + color.num);
+  const colorResults: NodeListOf<HTMLElement> =
+    colorWrapper.querySelectorAll(".color-result");
+
+  const inputH: SlRange | null = colorInputsWrapper.querySelector(".range-h");
+
+  const inputS: SlInput | null = colorInputsWrapper.querySelector(".input-s");
+  const rangeS: SlRange | null = colorInputsWrapper.querySelector(".range-s");
+  const inputV: SlInput | null = colorInputsWrapper.querySelector(".input-v");
+  const rangeV: SlRange | null = colorInputsWrapper.querySelector(".range-v");
 
   if (
-    colorResult === null ||
     inputH === null ||
     inputS === null ||
     inputV === null ||
@@ -438,7 +469,9 @@ function updateColorHTML(color: PaletteColor) {
   rangeV.value = color.hsv[2];
 
   const hsl = ColorConvert.hsv.hsl(color.hsv[0], color.hsv[1], color.hsv[2]);
-  colorResult.style.backgroundColor = `hsl(${hsl[0]} ${hsl[1]}% ${hsl[2]}%)`;
+  for (const c of colorResults) {
+    c.style.backgroundColor = `hsl(${hsl[0]} ${hsl[1]}% ${hsl[2]}%)`;
+  }
 }
 
 function createColorIndices(image: HTMLImageElement): {

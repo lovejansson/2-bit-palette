@@ -1,201 +1,599 @@
 <!DOCTYPE html>
 <html class="sl-theme-light">
-
-<head>
+  <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Silkscreen:wght@400;700&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&family=Press+Start+2P&family=Silkscreen:wght@400;700&family=Source+Code+Pro:ital,wght@0,200..900;1,200..900&display=swap"
+      rel="stylesheet"
+    />
     <script type="module" src="./index.js"></script>
 
     <style>
-        /* Initially hide hidden elements to prevent intial flicker */
-        .hidden {
-            visibility: hidden !important;
-        }
+      /* Initially hide hidden elements to prevent intial flicker */
+      .hidden {
+        visibility: hidden !important;
+      }
     </style>
 
     <script>
-        // Initialize theme before DOM Render to prevent initial flicker
-        (() => {
-            const dark = localStorage.getItem("theme") !== "light" && matchMedia("(prefers-color-scheme: dark)");
-            if (dark) {
-                document.documentElement.classList.add("sl-theme-dark");
-                document.documentElement.classList.remove("sl-theme-light");
-            }
-        })();
+      // Initialize theme before DOM Render to prevent initial flicker
+      (() => {
+        const dark =
+          localStorage.getItem("theme") !== "light" &&
+          matchMedia("(prefers-color-scheme: dark)");
+        if (dark) {
+          document.documentElement.classList.add("sl-theme-dark");
+          document.documentElement.classList.remove("sl-theme-light");
+        }
+      })();
     </script>
-</head>
+  </head>
 
-<body class="hidden">
+  <body class="hidden">
     <header>
-        <h1>2-bit palette</h1>
-        <section id="section-site-settings">
-            <sl-icon-button id="btn-sun" library="pixelarticons" style="font-size: 1.5rem;" name="sun-alt" label="About"></sl-icon-button>
-            <sl-icon-button id="btn-moon" library="pixelarticons" style="font-size: 1.5rem" name="moon-stars" label="About"></sl-icon-button>
-            <sl-icon-button id="btn-about" library="pixelarticons" style="font-size: 1.5rem" name="info" label="About"></sl-icon-button>
-        </section>
+      <h1>2-bit palette</h1>
+      <section id="section-site-settings">
+        <sl-icon-button
+          id="btn-sun"
+          library="pixelarticons"
+          style="font-size: 1.5rem"
+          name="sun-alt"
+          label="About"
+        ></sl-icon-button>
+        <sl-icon-button
+          id="btn-moon"
+          library="pixelarticons"
+          style="font-size: 1.5rem"
+          name="moon-stars"
+          label="About"
+        ></sl-icon-button>
+        <sl-icon-button
+          id="btn-about"
+          library="pixelarticons"
+          style="font-size: 1.5rem"
+          name="info"
+          label="About"
+        ></sl-icon-button>
+      </section>
     </header>
     <main>
-        <section id="section-color">
-            <div id="color-1" class="color-wrapper">
-                <div class="color-result"></div>
-                <div class="color-inputs">
-                    <sl-range label="H" class="range-h" min="0" max="360" step="1" tooltip="none"></sl-range>
+      <section id="section-color">
+        <div id="color-1">
+          <div class="color-wrapper">
+            <div class="color-result"></div>
+            <div class="color-inputs">
+              <sl-range
+                label="H"
+                class="range-h"
+                min="0"
+                max="360"
+                step="1"
+                tooltip="none"
+              ></sl-range>
 
-                    <div class="div-s">
-                        <sl-range label="S" class="range-s" min="0" max="100" step="1" tooltip="none"></sl-range>
-                        <sl-input class="input-s" size="small" min="0" max="100" type="number"></sl-input>
-                    </div>
+              <div class="div-s">
+                <sl-range
+                  label="S"
+                  class="range-s"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-s"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
 
-                    <div class="div-v">
-                        <sl-range label="V" class="range-v" min="0" max="100" step="1" tooltip="none"></sl-range>
-                        <sl-input class="input-v" size="small" min="0" max="100" type="number"></sl-input>
-                    </div>
-                </div>
+              <div class="div-v">
+                <sl-range
+                  label="V"
+                  class="range-v"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-v"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
             </div>
+          </div>
+          <button class="btn-color color-result"></button>
+          <sl-dialog class="dialog-color" label="Color 1">
+            <div class="color-result"></div>
+            <div class="color-inputs">
+              <sl-range
+                label="H"
+                class="range-h"
+                min="0"
+                max="360"
+                step="1"
+                tooltip="none"
+              ></sl-range>
 
-            <div id="color-2" class="color-wrapper">
-                <div class="color-result"></div>
-                <div class="color-inputs">
-                    <sl-range label="H" class="range-h" min="0" max="360" step="1" tooltip="none"></sl-range>
+              <div class="div-s">
+                <sl-range
+                  label="S"
+                  class="range-s"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-s"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
 
-                    <div class="div-s">
-                        <sl-range label="S" class="range-s" min="0" max="100" step="1" tooltip="none"></sl-range>
-                        <sl-input class="input-s" size="small" min="0" max="100" type="number"></sl-input>
-                    </div>
-
-                    <div class="div-v">
-                        <sl-range label="V" class="range-v" min="0" max="100" step="1" tooltip="none"></sl-range>
-                        <sl-input class="input-v" size="small" min="0" max="100" type="number"></sl-input>
-                    </div>
-                </div>
+              <div class="div-v">
+                <sl-range
+                  label="V"
+                  class="range-v"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-v"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
             </div>
+          </sl-dialog>
+        </div>
 
-            <div id="color-3" class="color-wrapper">
-                <div class="color-result"></div>
-                <div class="color-inputs">
-                    <sl-range label="H" class="range-h" min="0" max="360" step="1" tooltip="none"></sl-range>
+        <div id="color-2">
+          <div class="color-wrapper">
+            <div class="color-result"></div>
+            <div class="color-inputs">
+              <sl-range
+                label="H"
+                class="range-h"
+                min="0"
+                max="360"
+                step="1"
+                tooltip="none"
+              ></sl-range>
 
-                    <div class="div-s">
-                        <sl-range label="S" class="range-s" min="0" max="100" step="1" tooltip="none"></sl-range>
-                        <sl-input class="input-s" size="small" min="0" max="100" type="number"></sl-input>
-                    </div>
+              <div class="div-s">
+                <sl-range
+                  label="S"
+                  class="range-s"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-s"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
 
-                    <div class="div-v">
-                        <sl-range label="V" class="range-v" min="0" max="100" step="1" tooltip="none"></sl-range>
-                        <sl-input class="input-v" size="small" min="0" max="100" type="number"></sl-input>
-                    </div>
-                </div>
+              <div class="div-v">
+                <sl-range
+                  label="V"
+                  class="range-v"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-v"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
             </div>
+          </div>
+          <button class="btn-color color-result"></button>
+          <sl-dialog class="dialog-color" label="Color 2">
+            <div class="color-result"></div>
+            <div class="color-inputs">
+              <sl-range
+                label="H"
+                class="range-h"
+                min="0"
+                max="360"
+                step="1"
+                tooltip="none"
+              ></sl-range>
 
-            <div id="color-4" class="color-wrapper">
-                <div class="color-result"></div>
-                <div class="color-inputs">
-                    <sl-range label="H" class="range-h" min="0" max="360" step="1" tooltip="none"></sl-range>
+              <div class="div-s">
+                <sl-range
+                  label="S"
+                  class="range-s"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-s"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
 
-                    <div class="div-s">
-                        <sl-range label="S" class="range-s" min="0" max="100" step="1" tooltip="none"></sl-range>
-                        <sl-input class="input-s" size="small" min="0" max="100" type="number"></sl-input>
-                    </div>
-
-                    <div class="div-v">
-                        <sl-range label="V" class="range-v" min="0" max="100" step="1" tooltip="none"></sl-range>
-                        <sl-input class="input-v" size="small" min="0" max="100" type="number"></sl-input>
-                    </div>
-                </div>
+              <div class="div-v">
+                <sl-range
+                  label="V"
+                  class="range-v"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-v"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
             </div>
+          </sl-dialog>
+        </div>
+
+        <div id="color-3">
+          <div class="color-wrapper">
+            <div class="color-result"></div>
+            <div class="color-inputs">
+              <sl-range
+                label="H"
+                class="range-h"
+                min="0"
+                max="360"
+                step="1"
+                tooltip="none"
+              ></sl-range>
+
+              <div class="div-s">
+                <sl-range
+                  label="S"
+                  class="range-s"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-s"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
+
+              <div class="div-v">
+                <sl-range
+                  label="V"
+                  class="range-v"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-v"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
+            </div>
+          </div>
+          <button class="btn-color color-result"></button>
+          <sl-dialog class="dialog-color" label="Color 3">
+            <div class="color-result"></div>
+            <div class="color-inputs">
+              <sl-range
+                label="H"
+                class="range-h"
+                min="0"
+                max="360"
+                step="1"
+                tooltip="none"
+              ></sl-range>
+
+              <div class="div-s">
+                <sl-range
+                  label="S"
+                  class="range-s"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-s"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
+
+              <div class="div-v">
+                <sl-range
+                  label="V"
+                  class="range-v"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-v"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
+            </div>
+          </sl-dialog>
+        </div>
+
+        <div id="color-4">
+          <div class="color-wrapper">
+            <div class="color-result"></div>
+            <div class="color-inputs">
+              <sl-range
+                label="H"
+                class="range-h"
+                min="0"
+                max="360"
+                step="1"
+                tooltip="none"
+              ></sl-range>
+
+              <div class="div-s">
+                <sl-range
+                  label="S"
+                  class="range-s"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-s"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
+
+              <div class="div-v">
+                <sl-range
+                  label="V"
+                  class="range-v"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-v"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
+            </div>
+          </div>
+          <button class="btn-color color-result"></button>
+          <sl-dialog class="dialog-color" label="Color 4">
+            <div class="color-result"></div>
+            <div class="color-inputs">
+              <sl-range
+                label="H"
+                class="range-h"
+                min="0"
+                max="360"
+                step="1"
+                tooltip="none"
+              ></sl-range>
+
+              <div class="div-s">
+                <sl-range
+                  label="S"
+                  class="range-s"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-s"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
+
+              <div class="div-v">
+                <sl-range
+                  label="V"
+                  class="range-v"
+                  min="0"
+                  max="100"
+                  step="1"
+                  tooltip="none"
+                ></sl-range>
+                <sl-input
+                  class="input-v"
+                  size="small"
+                  min="0"
+                  max="100"
+                  type="number"
+                ></sl-input>
+              </div>
+            </div>
+          </sl-dialog>
+        </div>
+      </section>
+
+      <section id="section-palette">
+        <section id="section-lospec-search">
+          <div id="lospec-search-box">
+            <sl-input
+              id="input-lospec-search"
+              placeholder="Search Lospec palette"
+              help-text="Search lospec palette by name in url."
+            ></sl-input>
+            <sl-button id="btn-lospec-search" aria-label="Search">
+              <sl-icon
+                slot="prefix"
+                name="search"
+                library="pixelarticons"
+              ></sl-icon>
+              <sl-icon
+                slot="prefix"
+                name="loader"
+                library="pixelarticons"
+                class="spinner hidden"
+              ></sl-icon>
+            </sl-button>
+          </div>
+
+          <div id="lospec-search-result" class="hidden">
+            <div id="lospec-palette-info">
+              <p id="lospec-palette-name"></p>
+              <p id="lospec-palette-author"></p>
+            </div>
+            <div id="lospec-palette"></div>
+            <sl-button id="btn-apply-lospec-palette">Apply</sl-button>
+          </div>
+
+          <sl-alert variant="danger" id="lospec-search-error" closable>
+          </sl-alert>
         </section>
-
-        <section id="section-palette">
-            <section id="section-lospec-search">
-                <div id="lospec-search-box">
-                    <sl-input id="input-lospec-search" placeholder="Search Lospec palette" help-text="Search lospec palette by name in url."></sl-input>
-                    <sl-button id="btn-lospec-search" aria-label="Search">
-                        <sl-icon slot="prefix" name="search" library="pixelarticons"></sl-icon>
-                        <sl-icon slot="prefix" name="loader" library="pixelarticons" class="spinner hidden"></sl-icon>
-                    </sl-button>
-                </div>
-
-                <div id="lospec-search-result" class="hidden">
-                    <div id="lospec-palette-info">
-                        <p id="lospec-palette-name"></p>
-                        <p id="lospec-palette-author"></p>
-                    </div>
-                    <div id="lospec-palette"></div>
-                    <sl-button id="btn-apply-lospec-palette">Apply</sl-button>
-                </div>
-
-                <sl-alert variant="danger" id="lospec-search-error" closable>
-                    
-                </sl-alert>
-             
-            </section>
-            <sl-dropdown id="download">
-                <sl-button  slot="trigger">
-                    <sl-icon  library="pixelarticons" name="download" slot="prefix"></sl-icon>
-                    Download</sl-button>
-                <sl-menu id="menu-download">
-                    <sl-menu-item value="png-1" size="small" pill>PNG Image (1px)</sl-menu-item>
-                    <sl-menu-item value="png-8" size="small" pill>PNG Image (8px)</sl-menu-item>
-                    <sl-menu-item value="png-32" size="small" pill>PNG Image (32px)</sl-menu-item>
-                    <sl-menu-item value="pal" size="small" pill>PAL File (JASC)</sl-menu-item>
-                    <sl-menu-item value="photoshop-ase" size="small" pill>Photoshop ASE</sl-menu-item>
-                    <sl-menu-item value="paint" size="small" pill>Paint.net TXT</sl-menu-item>
-                    <sl-menu-item value="gimp" size="small" pill>GIMP GPL</sl-menu-item>
-                    <sl-menu-item value="hex" size="small" pill>HEX File</sl-menu-item>
-                </sl-menu>
-            </sl-dropdown>
-        </section>
-        <canvas></canvas>
+        <sl-dropdown id="download">
+          <sl-button slot="trigger">
+            <sl-icon
+              library="pixelarticons"
+              name="download"
+              slot="prefix"
+            ></sl-icon>
+            Download</sl-button
+          >
+          <sl-menu id="menu-download">
+            <sl-menu-item value="png-1" size="small" pill
+              >PNG Image (1px)</sl-menu-item
+            >
+            <sl-menu-item value="png-8" size="small" pill
+              >PNG Image (8px)</sl-menu-item
+            >
+            <sl-menu-item value="png-32" size="small" pill
+              >PNG Image (32px)</sl-menu-item
+            >
+            <sl-menu-item value="pal" size="small" pill
+              >PAL File (JASC)</sl-menu-item
+            >
+            <sl-menu-item value="photoshop-ase" size="small" pill
+              >Photoshop ASE</sl-menu-item
+            >
+            <sl-menu-item value="paint" size="small" pill
+              >Paint.net TXT</sl-menu-item
+            >
+            <sl-menu-item value="gimp" size="small" pill>GIMP GPL</sl-menu-item>
+            <sl-menu-item value="hex" size="small" pill>HEX File</sl-menu-item>
+          </sl-menu>
+        </sl-dropdown>
+      </section>
+      <canvas></canvas>
     </main>
 
     <sl-dialog id="dialog-tag" label="2-bit palette">
-        <div id="info">
-            <p>
-                A 2-bit palette is a color palette that contains four colors and is commonly used in pixel art with a Game Boy-style aesthetic. The name
-                <q>2-bit</q> comes from the fact that it takes 2 bits to store four colors in a computer, since 2<sup>2</sup> = 4.
-            </p>
+      <div id="info">
+        <p>
+          A 2-bit palette is a color palette that contains four colors and is
+          commonly used in pixel art with a Game Boy-style aesthetic. The name
+          <q>2-bit</q> comes from the fact that it takes 2 bits to store four
+          colors in a computer, since 2<sup>2</sup> = 4.
+        </p>
 
-            <p>
-                This tool allows users to select colors for such a palette. It uses the HSV color model, making it easy to adjust hue, saturation, and value separately and see how these changes affect the result.
-            </p>
+        <p>
+          This tool allows users to select colors for such a palette. It uses
+          the HSV color model, making it easy to adjust hue, saturation, and
+          value separately and see how these changes affect the result.
+        </p>
 
-            <p>
-                The palette can be exported in several different formats. However, since I don't personally use all of these formats, please contact me if anything doesn't work as expected.
-            </p>
-        </div>
+        <p>
+          The palette can be exported in several different formats. However,
+          since I don't personally use all of these formats, please contact me
+          if anything doesn't work as expected.
+        </p>
+      </div>
 
-        <div id="footer" slot="footer">
-            <p>
-                Created by
-                <a href="https://pimpixels.com" target="_blank">pimpixels</a>
-            </p>
-            <ul>
-                <li>
-                    <a href="https://x.com/pimpixels/" target="_blank">
-                        <sl-icon library="pixelarticons" name="x"></sl-icon>
-                    </a>
-                </li>
-                <li>
-                    <a href="https://bsky.app/profile/pimpixels.bsky.social/" target="_blank">
-                        <sl-icon library="pixelarticons" name="bsky"></sl-icon>
-                    </a>
-                </li>
-                <li>
-                    <a href="https://www.instagram.com/pimpixels/" target="_blank">
-                        <sl-icon library="pixelarticons" name="insta"></sl-icon>
-                    </a>
-                </li>
-                <li>
-                    <a href="https://github.com/lovejansson/" target="_blank">
-                        <sl-icon library="pixelarticons" name="github"></sl-icon>
-                    </a>
-                </li>
-            </ul>
-        </div>
+      <div id="footer" slot="footer">
+        <p>
+          Created by
+          <a href="https://pimpixels.com" target="_blank">pimpixels</a>
+        </p>
+        <ul>
+          <li>
+            <a href="https://x.com/pimpixels/" target="_blank">
+              <sl-icon library="pixelarticons" name="x"></sl-icon>
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://bsky.app/profile/pimpixels.bsky.social/"
+              target="_blank"
+            >
+              <sl-icon library="pixelarticons" name="bsky"></sl-icon>
+            </a>
+          </li>
+          <li>
+            <a href="https://www.instagram.com/pimpixels/" target="_blank">
+              <sl-icon library="pixelarticons" name="insta"></sl-icon>
+            </a>
+          </li>
+          <li>
+            <a href="https://github.com/lovejansson/" target="_blank">
+              <sl-icon library="pixelarticons" name="github"></sl-icon>
+            </a>
+          </li>
+        </ul>
+      </div>
     </sl-dialog>
-</body>
-
+  </body>
 </html>
