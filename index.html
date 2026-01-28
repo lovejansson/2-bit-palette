@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html class="sl-theme-light">
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -501,11 +501,10 @@
             <div id="lospec-palette"></div>
             <sl-button id="btn-apply-lospec-palette">Apply</sl-button>
           </div>
-
-          <sl-alert variant="danger" id="lospec-search-error" closable>
-          </sl-alert>
         </section>
-        <sl-dropdown id="download">
+        <section>
+          <sl-button id="btn-upload"><sl-icon library="pixelarticons" name="upload"></sl-icon></sl-button>
+        <sl-dropdown id="dropdown-download">
           <sl-button slot="trigger">
             <sl-icon
               library="pixelarticons"
@@ -537,9 +536,12 @@
             <sl-menu-item value="hex" size="small" pill>HEX File</sl-menu-item>
           </sl-menu>
         </sl-dropdown>
+        </section>
       </section>
       <canvas></canvas>
     </main>
+
+    <sl-alert variant="danger" id="alert-error" closable> </sl-alert>
 
     <sl-dialog id="dialog-tag" label="2-bit palette">
       <div id="info">

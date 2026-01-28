@@ -176,14 +176,20 @@
   
 }
 
-html, body{
-    height: 100%;
-    width: 100%;
+html{
+    height: 100dvh;
+    width: 100dvw;
     margin: 0;
     padding: 0;
     color: var(--color-0);
+    background-color: var(--color-1);
+}
 
-  background-color: var(--color-1);
+body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+      width: 100%;
 }
 
 p {
@@ -254,6 +260,7 @@ a {
     align-items: center;
     flex-direction: column;
     gap: 2.4rem;
+    padding: 2rem;
 }
 
 sl-range {
@@ -358,7 +365,6 @@ sl-button {
 #section-palette {
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
     align-self: stretch;
 }
 
@@ -386,13 +392,24 @@ sl-button {
     font-size: 0.8rem;
 }
 
-#lospec-search-error {
+#alert-error {
     --sl-spacing-large: 0.5rem;
+   
+}
+
+#alert-error::part(base) {
+ position: fixed;
+top: 1rem; 
+right: 2rem;
 }
 
 #lospec-palette {
     height: 2.4rem;
     width: calc(2.4rem * 4);
+}
+
+canvas {
+    border: 1px solid white;
 }
 
 @media screen and (max-width: 767px) {
@@ -403,10 +420,10 @@ sl-button {
     .color-wrapper {
         display: none;
     }
-       #section-palette {
+    #section-palette {
         flex-direction: column;
     }
- #download {
+    #dropdown-download {
         align-self: flex-end;
     }
 
@@ -416,7 +433,13 @@ sl-button {
     sl-range {
     --track-height: 1.75rem;
     --thumb-size: 2rem; 
-}
+    }
+    #alert-error::part(base) {
+        position: fixed;
+        top: 1rem; 
+        right: 1rem;
+        left : 1rem;
+    }
 }
 
 
@@ -429,5 +452,11 @@ sl-button {
 @media screen and (max-width: 1500px) {
     canvas {
         max-width: 600px;
+    }
+}
+
+@media screen and (min-width: 390px) {
+    #section-palette {
+        gap: 1rem;
     }
 }

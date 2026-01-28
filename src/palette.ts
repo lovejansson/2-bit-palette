@@ -8,7 +8,7 @@ type PaletteColor = {
 
 async function createPNGPalette(
   colors: PaletteColor[],
-  size: number
+  size: number,
 ): Promise<Blob> {
   const canvas = document.createElement("canvas");
   const ctx: CanvasRenderingContext2D | null = canvas.getContext("2d");
@@ -196,7 +196,7 @@ type LospecPalette = {
 };
 
 async function searchLospecPalette(
-  name: string
+  name: string,
 ): Promise<Result<LospecPalette, string>> {
   try {
     const res = await fetch(`https://lospec.com/palette-list/${name}.json`);

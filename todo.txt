@@ -1,7 +1,19 @@
+Upload user's own image / use default in canvas
+
+Load image 
+
+Recalculate canvas indices by combining the uploaded images. 
+
+Update canvas uses indices array to draw the colors onto the indices, each index contains mapping to wich colors is there
+
+Right click image to select 
+
+When selected it can be moved around
+
+When selected it can be deleted by pressing del or backspace
+
+zoom or translate -> draw
+Load -> creates indices based of value, adds image to images, draws 
 
 
-Upload user's own image / use default
-
-Edit Error UI based on this
-
-
+Modular canvas class that handles zoom and translations internally..

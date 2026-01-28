@@ -27,6 +27,8 @@ import { registerIconLibrary } from "@shoelace-style/shoelace/dist/utilities/ico
 import "@shoelace-style/shoelace/dist/themes/light.css";
 import "@shoelace-style/shoelace/dist/themes/dark.css";
 import "./index.css";
+import type { Result, UserImage } from "./src/types";
+import CanvasViewport from "./src/Canvas";
 
 registerIconLibrary("pixelarticons", {
   resolver: (name: string) =>
@@ -52,18 +54,16 @@ function loadImage(src: string): Promise<HTMLImageElement> {
 }
 
 function applyLospecPalette(
+  canvas: CanvasViewport,
   palette: LospecPalette,
   colors: PaletteColor[],
-  ctx: CanvasRenderingContext2D,
-  indices: number[],
-  isMobile: boolean
+  isMobile: boolean,
 ) {
   const lospecHSVColors = palette.colors.map((c) => ColorConvert.hex.hsv(c));
 
   lospecHSVColors.sort((c1, c2) => c1[2] - c2[2]);
 
   for (let i = 0; i < lospecHSVColors.length; ++i) {
-    console.log(colors[i]);
     colors[i].hsv = lospecHSVColors[i];
   }
 
@@ -71,7 +71,7 @@ function applyLospecPalette(
     updateColorsUI(c, isMobile);
   }
 
-  updateCanvas(ctx, indices, colors);
+  canvas.draw();
 }
 
 function switchTheme(theme: "dark" | "light") {
@@ -98,10 +98,9 @@ function switchTheme(theme: "dark" | "light") {
 }
 
 function initColorsUI(
+  canvas: CanvasViewport,
   colors: PaletteColor[],
-  indices: number[],
-  ctx: CanvasRenderingContext2D,
-  isMobile = false
+  isMobile = false,
 ) {
   for (const c of colors) {
     const colorWrapper = document.getElementById(`color-${c.num}`);
@@ -111,7 +110,6 @@ function initColorsUI(
     const colorInputsWrapper = isMobile
       ? colorWrapper.querySelector(".dialog-color")
       : colorWrapper.querySelector(".color-wrapper");
-
 
     if (colorInputsWrapper === null)
       throw new Error("Missing DOM: color inputs " + c.num);
@@ -156,7 +154,7 @@ function initColorsUI(
       if (e.target) {
         c.hsv[0] = parseInt((e.target as SlInput).value);
         updateColorsUI(c, isMobile);
-        updateCanvas(ctx, indices, colors);
+        canvas.draw();
       }
     });
 
@@ -173,7 +171,7 @@ function initColorsUI(
         }
 
         updateColorsUI(c, isMobile);
-        updateCanvas(ctx, indices, colors);
+        canvas.draw();
       }
     });
 
@@ -190,7 +188,7 @@ function initColorsUI(
         }
 
         updateColorsUI(c, isMobile);
-        updateCanvas(ctx, indices, colors);
+        canvas.draw();
       }
     });
 
@@ -207,7 +205,7 @@ function initColorsUI(
         }
 
         updateColorsUI(c, isMobile);
-        updateCanvas(ctx, indices, colors);
+        canvas.draw();
       }
     });
 
@@ -224,53 +222,53 @@ function initColorsUI(
         }
 
         updateColorsUI(c, isMobile);
-        updateCanvas(ctx, indices, colors);
+        canvas.draw();
       }
     });
 
     updateColorsUI(c, isMobile);
-    updateCanvas(ctx, indices, colors);
+    canvas.draw();
   }
 }
 
 async function main() {
   const menuDownload: SlMenu | null = document.getElementById(
-    "menu-download"
+    "menu-download",
   ) as SlMenu | null;
 
   const inputLospecSearch: SlInput | null = document.getElementById(
-    "input-lospec-search"
+    "input-lospec-search",
   ) as SlInput | null;
   const btnLospecSearch: SlButton | null = document.getElementById(
-    "btn-lospec-search"
+    "btn-lospec-search",
   ) as SlButton | null;
   const btnApplyLospecPalette: SlButton | null = document.getElementById(
-    "btn-apply-lospec-palette"
+    "btn-apply-lospec-palette",
   ) as SlButton | null;
   const divLospecPalette: HTMLDivElement = document.getElementById(
-    "lospec-palette"
+    "lospec-palette",
   )! as HTMLDivElement;
   const pLospecPalette: HTMLParagraphElement = document.getElementById(
-    "lospec-palette-name"
+    "lospec-palette-name",
   )! as HTMLParagraphElement;
   const pLospecPaletteAuthor: HTMLParagraphElement = document.getElementById(
-    "lospec-palette-author"
+    "lospec-palette-author",
   )! as HTMLParagraphElement;
-  const alertLospecError: SlAlert = document.getElementById(
-    "lospec-search-error"
+  const alertError: SlAlert = document.getElementById(
+    "alert-error",
   )! as SlAlert;
 
-  const canvas = document.querySelector("canvas");
+  const canvasEl = document.querySelector("canvas");
   const btnAbout = document.getElementById("btn-about");
   const btnSun = document.getElementById("btn-sun");
   const btnMoon = document.getElementById("btn-moon");
   const dialogTag: SlDialog | null = document.getElementById(
-    "dialog-tag"
+    "dialog-tag",
   ) as SlDialog | null;
 
   if (
     menuDownload === null ||
-    canvas === null ||
+    canvasEl === null ||
     btnAbout === null ||
     dialogTag === null ||
     btnMoon === null ||
@@ -281,26 +279,52 @@ async function main() {
   )
     throw new Error("Missing DOM");
 
-  const ctx = canvas.getContext("2d");
+  const canvas = new CanvasViewport(canvasEl, {
+    zoom: { max: 4, min: 0.5, speed: 0.25 },
+    pan: { key: " " },
+    draw: (ctx: CanvasRenderingContext2D) => draw(ctx, colors, images),
+  });
 
-  if (ctx === null) throw new Error("ctx is null");
+  canvas.init();
 
-  const image = await loadImage(
-    `${import.meta.env.BASE_URL}assets/images/board-mini.png`
+  const defaultImage = await loadImage(
+    `${import.meta.env.BASE_URL}assets/images/board-mini.png`,
   );
 
-  const { indices, colors } = createColorIndices(image);
+  const indicesResult = createColorIndices(defaultImage);
+
+  if (!indicesResult.isSuccess) {
+    alertError.textContent = indicesResult.data;
+    alertError.show();
+    return;
+  }
+
+  const colors: PaletteColor[] = [
+    { num: 1, hsv: [100, 50, 10] },
+    { num: 2, hsv: [100, 50, 30] },
+    { num: 3, hsv: [100, 50, 75] },
+    { num: 4, hsv: [100, 50, 94] },
+  ];
+
+  const images: UserImage[] = [
+    {
+      pos: { x: 0, y: 0 },
+      width: defaultImage.width,
+      height: defaultImage.height,
+      indices: indicesResult.data,
+    },
+  ];
 
   let isMobile = window.innerWidth < 767;
 
-  canvas.width = image.width;
-  canvas.height = image.height;
+  canvas.width = defaultImage.width;
+  canvas.height = defaultImage.height;
 
-  initColorsUI(colors, indices, ctx, window.innerWidth < 767);
+  initColorsUI(canvas, colors, window.innerWidth < 767);
 
   addEventListener("resize", () => {
     isMobile = window.innerWidth < 767;
-    initColorsUI(colors, indices, ctx, isMobile);
+    initColorsUI(canvas, colors, window.innerWidth < 767);
   });
 
   let lospecPalette: LospecPalette | null = null;
@@ -308,13 +332,13 @@ async function main() {
   btnApplyLospecPalette.addEventListener("click", () => {
     divLospecPalette.parentElement?.classList.add("hidden");
     if (lospecPalette !== null) {
-      applyLospecPalette(lospecPalette, colors, ctx, indices, isMobile);
+      applyLospecPalette(canvas, lospecPalette, colors, isMobile);
     }
   });
 
   inputLospecSearch.addEventListener("input", () => {
-    if (alertLospecError.open) {
-      alertLospecError.hide();
+    if (alertError.open) {
+      alertError.hide();
     }
 
     if (!divLospecPalette.parentElement?.classList.contains("hidden")) {
@@ -324,19 +348,18 @@ async function main() {
 
   btnLospecSearch.addEventListener("click", async () => {
     if (inputLospecSearch.value) {
-      btnLospecSearch.disabled = true;
       btnLospecSearch.children[0].classList.add("hidden");
       btnLospecSearch.children[1].classList.remove("hidden");
       const res = await searchLospecPalette(
-        inputLospecSearch.value.toLowerCase().trim().replaceAll(" ", "-")
+        inputLospecSearch.value.toLowerCase().trim().replaceAll(" ", "-"),
       );
 
       if (res.isSuccess) {
         const palette = res.data;
 
         if (palette.colors.length !== 4) {
-          alertLospecError.textContent = "Palette must have exactly 4 colors.";
-          alertLospecError.show();
+          alertError.textContent = "Palette must have exactly 4 colors.";
+          alertError.show();
         } else {
           lospecPalette = palette;
           const linearGradient = `linear-gradient(to right, #${palette.colors[0]} 0% 25%, #${palette.colors[1]} 25% 50%, #${palette.colors[2]} 50% 75%, #${palette.colors[3]} 75% 100%)`;
@@ -346,10 +369,9 @@ async function main() {
           divLospecPalette.parentElement?.classList.remove("hidden");
         }
       } else {
-        alertLospecError.textContent = "Palette not found.";
-        alertLospecError.show();
+        alertError.textContent = "Palette not found.";
+        alertError.show();
       }
-      btnLospecSearch.disabled = false;
       btnLospecSearch.children[0].classList.remove("hidden");
       btnLospecSearch.children[1].classList.add("hidden");
       inputLospecSearch.value = "";
@@ -374,15 +396,15 @@ async function main() {
     switchTheme("light");
   }
 
-  ctx.drawImage(image, 0, 0);
-
   menuDownload.addEventListener("sl-select", (e) => {
     downloadPalette(colors, e.detail.item.value);
   });
 
   requestAnimationFrame(() =>
-    document.querySelector("body")!.classList.remove("hidden")
+    document.querySelector("body")!.classList.remove("hidden"),
   );
+
+  canvas.draw();
 }
 
 function download(blob: Blob, extension: string) {
@@ -474,12 +496,7 @@ function updateColorsUI(color: PaletteColor, isMobile: boolean = false) {
   }
 }
 
-function createColorIndices(image: HTMLImageElement): {
-  colors: PaletteColor[];
-  indices: number[];
-} {
-  const indices: number[] = [];
-
+function createColorIndices(image: HTMLImageElement): Result<number[], string> {
   const canvas = document.createElement("canvas");
 
   const ctx = canvas.getContext("2d", { willReadFrequently: true });
@@ -489,6 +506,7 @@ function createColorIndices(image: HTMLImageElement): {
 
   canvas.width = image.width;
   canvas.height = image.height;
+
   ctx.drawImage(image, 0, 0, image.width, image.height);
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -511,20 +529,25 @@ function createColorIndices(image: HTMLImageElement): {
 
     if (
       colors.find(
-        (c) => c[0] === hsv[0] && c[1] === hsv[1] && c[2] === hsv[2]
+        (c) => c[0] === hsv[0] && c[1] === hsv[1] && c[2] === hsv[2],
       ) === undefined
     ) {
       colors.push(hsv);
       if (colors.length > 4)
-        throw new Error("Image contains more colors than 4!");
+        return {
+          isSuccess: false,
+          data: "Image contains more colors than 4!",
+        };
     }
   }
 
   if (colors.length < 4) {
-    throw new Error("Image contains less colors than 4!");
+    return { isSuccess: false, data: "Image contains less colors than 4!" };
   }
 
   colors.sort((a, b) => a[2] - b[2]);
+
+  const indices: number[] = [];
 
   let colorNum = 0;
 
@@ -537,7 +560,7 @@ function createColorIndices(image: HTMLImageElement): {
     hsv = ColorConvert.rgb.hsv(r, g, b);
 
     colorNum = colors.findIndex(
-      (c) => c[0] === hsv[0] && c[1] === hsv[1] && c[2] === hsv[2]
+      (c) => c[0] === hsv[0] && c[1] === hsv[1] && c[2] === hsv[2],
     );
 
     if (colorNum === -1)
@@ -546,44 +569,54 @@ function createColorIndices(image: HTMLImageElement): {
     indices.push(colorNum + 1);
   }
 
-  const paletteColors: PaletteColor[] = colors.map((c, idx) => ({
-    num: idx + 1,
-    hsv: c,
-  }));
-  return { indices, colors: paletteColors };
+  return { isSuccess: true, data: indices };
 }
 
-function updateCanvas(
+function draw(
   ctx: CanvasRenderingContext2D,
-  indices: number[],
-  colors: PaletteColor[]
-): void {
-  const newPixels = new Uint8ClampedArray(
-    4 * ctx.canvas.width * ctx.canvas.height
-  );
+  colors: PaletteColor[],
+  images: UserImage[],
+) {
+  
 
-  let paletteColor: PaletteColor | undefined = colors[0];
-  let rIdx = 0;
+  for (const image of images) {
+    // Create the pixels for the image by mapping the image indices with the chosen colors.
 
-  for (let i = 0; i < indices.length; ++i) {
-    paletteColor = colors.find((c) => c.num === indices[i]);
+    const newPixels = new Uint8ClampedArray(4 * image.width * image.height);
 
-    if (paletteColor === undefined) throw new Error("Color not found");
+    let paletteColor: PaletteColor | undefined = colors[0];
+    let rIdx = 0;
 
-    const rgb = ColorConvert.hsv.rgb(paletteColor.hsv);
+    for (let i = 0; i < image.indices.length; ++i) {
+      paletteColor = colors.find((c) => c.num === image.indices[i]);
 
-    rIdx = i * 4;
+      if (paletteColor === undefined)
+        throw new Error("Palette color not found");
 
-    newPixels[rIdx] = rgb[0];
-    newPixels[rIdx + 1] = rgb[1];
-    newPixels[rIdx + 2] = rgb[2];
-    newPixels[rIdx + 3] = 255;
+      const rgb = ColorConvert.hsv.rgb(paletteColor.hsv);
+
+      rIdx = i * 4;
+
+      newPixels[rIdx] = rgb[0];
+      newPixels[rIdx + 1] = rgb[1];
+      newPixels[rIdx + 2] = rgb[2];
+      newPixels[rIdx + 3] = 255;
+    }
+  
+
+    const imageData = new ImageData(
+      newPixels,
+      image.width,
+      image.height,
+    );
+
+    const canvasOff = document.createElement("canvas");
+    canvasOff.width = image.width;
+    canvasOff.height = image.height;
+    const offCtx = canvasOff.getContext("2d")!;
+
+    offCtx.putImageData(imageData, 0, 0);
+
+    ctx.drawImage(canvasOff, image.pos.x, image.pos.y);
   }
-
-  const imageData = new ImageData(
-    newPixels,
-    ctx.canvas.width,
-    ctx.canvas.height
-  );
-  ctx.putImageData(imageData, 0, 0);
 }
