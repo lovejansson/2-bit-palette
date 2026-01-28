@@ -69,10 +69,9 @@ export default class CanvasViewport {
   }
 
   draw() {
-
     this.ctx.resetTransform();
     this.ctx.clearRect(0, 0, this.width, this.height);
-  
+
     this.ctx.translate(this.translation.x, this.translation.y);
     this.ctx.scale(this.zoom, this.zoom);
     this.drawFunc(this.ctx);
@@ -92,7 +91,8 @@ export default class CanvasViewport {
 
   private addEventListeners() {
     addEventListener("wheel", (e: WheelEvent) => {
-  
+      console.dir(this);
+
       if (e.target !== this.canvas) return;
       if (!this.isZoomEnabled(this.zoomSettings)) return;
 
@@ -100,12 +100,12 @@ export default class CanvasViewport {
 
       if (delta < 0) {
         if (this.zoom < this.zoomSettings.max) {
-          this.zoom = roundToDecimal(this.zoom + this.zoomSettings.speed, 4);
-
           const worldPos = this.getWorldPos({
             x: this.canvasMousePos.x,
             y: this.canvasMousePos.y,
           });
+          this.zoom = roundToDecimal(this.zoom + this.zoomSettings.speed, 3);
+    
 
           /**
            * To calculate:
@@ -124,7 +124,7 @@ export default class CanvasViewport {
         }
       } else {
         if (this.zoom >= this.zoomSettings.min) {
-          this.zoom = roundToDecimal(this.zoom - this.zoomSettings.speed, 4);
+          this.zoom = roundToDecimal(this.zoom - this.zoomSettings.speed, 3);
 
           const worldPos = this.getWorldPos({
             x: this.canvasMousePos.x,
@@ -141,19 +141,15 @@ export default class CanvasViewport {
     });
 
     if (this.isPanEnabled(this.panSettings)) {
-  
       this.canvas.addEventListener("onmousedown", (e) => {});
 
       this.canvas.addEventListener("mousemove", (e: MouseEvent) => {
-   
-            if (e.target !== this.canvas) return;
+        if (e.target !== this.canvas) return;
 
-        
-            const rect = this.canvas.getBoundingClientRect();
-            this.canvasMousePos.x = e.clientX - rect.left;
-            this.canvasMousePos.y = e.clientY - rect.top;
-          
-            
+        const rect = this.canvas.getBoundingClientRect();
+
+        this.canvasMousePos.x = Math.round(e.clientX - rect.left);
+        this.canvasMousePos.y = Math.round(e.clientY - rect.top);
       });
 
       this.canvas.addEventListener("onmouseup", (e) => {});
@@ -170,19 +166,21 @@ export default class CanvasViewport {
 
   private getWorldPos(pos: Point) {
     // Uses the inverse translation matrix to convert a position on the canvas/screen to the world.
-    // const inv = this.ctx.getTransform().invertSelf();
-    // const p = new DOMPoint(pos.x, pos.y).matrixTransform(inv);
-    // return { x: p.x, y: p.y };
+    const inv = this.ctx.getTransform().invertSelf();
+    const p = new DOMPoint(pos.x, pos.y).matrixTransform(inv);
+    return { x: p.x, y: p.y };
 
-     const inv = this.ctx.getTransform().invertSelf();
+    //  const inv = this.ctx.getTransform().invertSelf();
 
-    const worldX = inv.a * pos.x + inv.c * pos.y + inv.e;
-    const worldY = inv.b * pos.x + inv.d * pos.y + inv.f;
+    // const worldX = inv.a * pos.x + inv.c * pos.y + inv.e;
+    // const worldY = inv.b * pos.x + inv.d * pos.y + inv.f;
 
-    return { x: worldX, y: worldY };
+    // return { x: Math.round(worldX), y: Math.round(worldY) };
   }
 }
 
 function roundToDecimal(num: number, decmialPlaces: number) {
-  return Math.round(num * decmialPlaces) / decmialPlaces;
+  return (
+    Math.round(num * Math.pow(10, decmialPlaces)) / Math.pow(10, decmialPlaces)
+  );
 }

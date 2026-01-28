@@ -317,8 +317,8 @@ async function main() {
 
   let isMobile = window.innerWidth < 767;
 
-  canvas.width = defaultImage.width;
-  canvas.height = defaultImage.height;
+  canvas.width = 16 * 50;
+  canvas.height = 9 * 50;
 
   initColorsUI(canvas, colors, window.innerWidth < 767);
 
@@ -578,45 +578,49 @@ function draw(
   images: UserImage[],
 ) {
   
+  for(let i = 0; i < 10; ++i) {
+  ctx.fillStyle = "red";
+  ctx.fillRect(100 * i + i * 10, 100, 100, 100)
+  }
 
-  for (const image of images) {
-    // Create the pixels for the image by mapping the image indices with the chosen colors.
+  // for (const image of images) {
+  //   // Create the pixels for the image by mapping the image indices with the chosen colors.
 
-    const newPixels = new Uint8ClampedArray(4 * image.width * image.height);
+  //   const newPixels = new Uint8ClampedArray(4 * image.width * image.height);
 
-    let paletteColor: PaletteColor | undefined = colors[0];
-    let rIdx = 0;
+  //   let paletteColor: PaletteColor | undefined = colors[0];
+  //   let rIdx = 0;
 
-    for (let i = 0; i < image.indices.length; ++i) {
-      paletteColor = colors.find((c) => c.num === image.indices[i]);
+  //   for (let i = 0; i < image.indices.length; ++i) {
+  //     paletteColor = colors.find((c) => c.num === image.indices[i]);
 
-      if (paletteColor === undefined)
-        throw new Error("Palette color not found");
+  //     if (paletteColor === undefined)
+  //       throw new Error("Palette color not found");
 
-      const rgb = ColorConvert.hsv.rgb(paletteColor.hsv);
+  //     const rgb = ColorConvert.hsv.rgb(paletteColor.hsv);
 
-      rIdx = i * 4;
+  //     rIdx = i * 4;
 
-      newPixels[rIdx] = rgb[0];
-      newPixels[rIdx + 1] = rgb[1];
-      newPixels[rIdx + 2] = rgb[2];
-      newPixels[rIdx + 3] = 255;
-    }
+  //     newPixels[rIdx] = rgb[0];
+  //     newPixels[rIdx + 1] = rgb[1];
+  //     newPixels[rIdx + 2] = rgb[2];
+  //     newPixels[rIdx + 3] = 255;
+  //   }
   
 
-    const imageData = new ImageData(
-      newPixels,
-      image.width,
-      image.height,
-    );
+  //   const imageData = new ImageData(
+  //     newPixels,
+  //     image.width,
+  //     image.height,
+  //   );
 
-    const canvasOff = document.createElement("canvas");
-    canvasOff.width = image.width;
-    canvasOff.height = image.height;
-    const offCtx = canvasOff.getContext("2d")!;
+  //   const canvasOff = document.createElement("canvas");
+  //   canvasOff.width = image.width;
+  //   canvasOff.height = image.height;
+  //   const offCtx = canvasOff.getContext("2d")!;
 
-    offCtx.putImageData(imageData, 0, 0);
+  //   offCtx.putImageData(imageData, 0, 0);
 
-    ctx.drawImage(canvasOff, image.pos.x, image.pos.y);
-  }
+  //   ctx.drawImage(canvasOff, image.pos.x, image.pos.y);
+  // }
 }
