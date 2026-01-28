@@ -53,6 +53,7 @@ export default class CanvasViewport {
   }
 
   set width(width: number) {
+    this.canvas.style.width = width + "px";
     this.canvas.width = width;
   }
 
@@ -61,14 +62,22 @@ export default class CanvasViewport {
   }
 
   set height(height: number) {
+    this.canvas.style.height = height + "px";
     this.canvas.height = height;
   }
 
   init() {
     this.addEventListeners();
+    this.update();
+  }
+
+  private update() {
+    this.draw();
+    requestAnimationFrame(() => this.update());
   }
 
   draw() {
+
     this.ctx.resetTransform();
     this.ctx.clearRect(0, 0, this.width, this.height);
 
@@ -91,8 +100,6 @@ export default class CanvasViewport {
 
   private addEventListeners() {
     addEventListener("wheel", (e: WheelEvent) => {
-      console.dir(this);
-
       if (e.target !== this.canvas) return;
       if (!this.isZoomEnabled(this.zoomSettings)) return;
 
@@ -104,8 +111,8 @@ export default class CanvasViewport {
             x: this.canvasMousePos.x,
             y: this.canvasMousePos.y,
           });
+
           this.zoom = roundToDecimal(this.zoom + this.zoomSettings.speed, 3);
-    
 
           /**
            * To calculate:
@@ -119,8 +126,8 @@ export default class CanvasViewport {
            * Translation = mouse pos - world pos * zoom
            *
            */
-          this.translation.x = this.canvasMousePos.x - worldPos.x * this.zoom;
-          this.translation.y = this.canvasMousePos.y - worldPos.y * this.zoom;
+          this.translation.x = Math.round(this.canvasMousePos.x - worldPos.x * this.zoom);
+          this.translation.y = Math.round(this.canvasMousePos.y - worldPos.y * this.zoom);
         }
       } else {
         if (this.zoom >= this.zoomSettings.min) {
@@ -131,12 +138,10 @@ export default class CanvasViewport {
             y: this.canvasMousePos.y,
           });
 
-          this.translation.x = this.canvasMousePos.x - worldPos.x * this.zoom;
-          this.translation.y = this.canvasMousePos.y - worldPos.y * this.zoom;
+          this.translation.x = Math.round(this.canvasMousePos.x - worldPos.x * this.zoom);
+          this.translation.y = Math.round(this.canvasMousePos.y - worldPos.y * this.zoom);
         }
       }
-
-      this.draw();
       e.stopPropagation();
     });
 
@@ -156,26 +161,11 @@ export default class CanvasViewport {
     }
   }
 
-  /**
-   *
-   * 1. Use a requestAnimation frame that calls "draw" every frame
-   *
-   * 2. Only draw when isDirty -> user decides when draw happens and how the draw procedure is accounted for
-   *
-   */
-
   private getWorldPos(pos: Point) {
     // Uses the inverse translation matrix to convert a position on the canvas/screen to the world.
     const inv = this.ctx.getTransform().invertSelf();
     const p = new DOMPoint(pos.x, pos.y).matrixTransform(inv);
     return { x: p.x, y: p.y };
-
-    //  const inv = this.ctx.getTransform().invertSelf();
-
-    // const worldX = inv.a * pos.x + inv.c * pos.y + inv.e;
-    // const worldY = inv.b * pos.x + inv.d * pos.y + inv.f;
-
-    // return { x: Math.round(worldX), y: Math.round(worldY) };
   }
 }
 
