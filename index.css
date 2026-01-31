@@ -319,7 +319,8 @@ main {
 canvas {
     width: 100%;
     image-rendering: pixelated;
-    border: 1px solid white;
+    background: var(--color-2);
+    touch-action: none;
 }
 
 
@@ -402,12 +403,19 @@ sl-button {
 #alert-error::part(base) {
  position: fixed;
 top: 1rem; 
-right: 2rem;
+right: 50%;
+transform: translateX(50%)
 }
 
 #lospec-palette {
     height: 2.4rem;
     width: calc(2.4rem * 4);
+}
+
+#section-btns {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 

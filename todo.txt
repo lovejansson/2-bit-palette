@@ -1,5 +1,37 @@
 Upload user's own image / use default in canvas area 
 
-* Pan canvas 
+Selection lib for selecting rects on a canvas
 
-* Selection lib for selecting rects on a canvas
+Gradient maps
+
+Move and delete ? 
+
+Markera en bild eller flera och när man drar på dom bilderna så flyttas bilderna som är valda 
+
+När användaren trycker delete så raderas bilderna 
+
+Markera ett område på en canvas och spara vilka tiles som är markerade, när användaren drar bilderna flyttas det 
+
+När användaren trycker på delete så raderas dessa tiles
+
+Det är markerade bilder vs markerade tiles 
+
+markerade bilder kan man spara undan och flytta i och med varje rendering since poisition kan vara allt, men tiles blir dumt att 
+dynamiskt uppdatera? eller? man måste "snap uppdatera" det
+
+hur som behöver canvas exponera en click handler/mouse move/current position of drag eller nått 
+
+
+Användaren kommer rita bilder at a given position och lyssna på click för att markera dem som valda 
+
+Canvas hanterar select area tool och click, samt för vidare on click with world position och select area med rect position in world -> användaren kan avgöra om den vill ha dessa 
+och vad som är valt
+
+
+Canvas on click -> user on click med world pos -> user selectrs image -> canvas on click -> user on click -> user unselecteds image 
+
+Canvas on select area -> user on select area -> user selects image 
+
+Canvas exponerar drag events med delta x och y -> det kan användaren använda för att veta hur den ska uppdatera position för tiles eller image
+
+Så det funkar inte med canvas grejjen på mobil. Låt det bara vara en bild på mobilen och disable pan och zooom för canvas + use isDirty för att bara rita ibland + ta bort load image

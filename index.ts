@@ -94,7 +94,7 @@ function switchTheme(theme: "dark" | "light") {
   localStorage.setItem("theme", theme);
 }
 
-function initColorsUI(colors: PaletteColor[], isMobile = false) {
+function initColorsUI(canvas: CanvasViewport, colors: PaletteColor[], isMobile = false) {
   for (const c of colors) {
     const colorWrapper = document.getElementById(`color-${c.num}`);
 
@@ -147,6 +147,7 @@ function initColorsUI(colors: PaletteColor[], isMobile = false) {
       if (e.target) {
         c.hsv[0] = parseInt((e.target as SlInput).value);
         updateColorsUI(c, isMobile);
+        canvas.draw();
       }
     });
 
@@ -163,6 +164,7 @@ function initColorsUI(colors: PaletteColor[], isMobile = false) {
         }
 
         updateColorsUI(c, isMobile);
+        canvas.draw();
       }
     });
 
@@ -179,6 +181,7 @@ function initColorsUI(colors: PaletteColor[], isMobile = false) {
         }
 
         updateColorsUI(c, isMobile);
+        canvas.draw();
       }
     });
 
@@ -195,6 +198,7 @@ function initColorsUI(colors: PaletteColor[], isMobile = false) {
         }
 
         updateColorsUI(c, isMobile);
+        canvas.draw();
       }
     });
 
@@ -211,10 +215,12 @@ function initColorsUI(colors: PaletteColor[], isMobile = false) {
         }
 
         updateColorsUI(c, isMobile);
+        canvas.draw();
       }
     });
 
     updateColorsUI(c, isMobile);
+    canvas.draw();
   }
 }
 
@@ -297,31 +303,20 @@ async function main() {
   let isMobile = window.innerWidth < 767;
 
   const canvas = new CanvasViewport(canvasEl, {
-    zoom: { max: 4, min: 0.5, speed: 0.375 },
-    pan: { key: " " },
+    drawLoop: false,
     draw: (ctx: CanvasRenderingContext2D) => draw(ctx, colors, images),
   });
 
+  canvas.width = defaultImage.width;
+  canvas.height = defaultImage.height;
+
   canvas.init();
 
-  initColorsUI(colors, window.innerWidth < 767);
-
-  const roMain = new ResizeObserver((entries) => {
-    console.dir(entries);
-
-    const rect = entries[0].contentRect;
-
-    const canvasRect = canvasEl.getBoundingClientRect();
-
-    canvas.height = rect.bottom - canvasRect.top;
-    canvas.width = rect.width;
-  });
-
-  roMain.observe(canvasEl.parentElement!);
+  initColorsUI(canvas, colors, window.innerWidth < 767);
 
   addEventListener("resize", () => {
     isMobile = window.innerWidth < 767;
-    initColorsUI(colors, window.innerWidth < 767);
+    initColorsUI(canvas, colors, window.innerWidth < 767);
   });
 
   let lospecPalette: LospecPalette | null = null;
@@ -330,6 +325,7 @@ async function main() {
     divLospecPalette.parentElement?.classList.add("hidden");
     if (lospecPalette !== null) {
       applyLospecPalette(lospecPalette, colors, isMobile);
+      canvas.draw();
     }
   });
 
@@ -397,8 +393,11 @@ async function main() {
     downloadPalette(colors, e.detail.item.value);
   });
 
-  requestAnimationFrame(() =>
-    document.querySelector("body")!.classList.remove("hidden"),
+  requestAnimationFrame(() => {
+
+    document.querySelector("body")!.classList.remove("hidden");
+    canvas.draw();
+  },
   );
 }
 
@@ -501,6 +500,8 @@ function createColorIndices(image: HTMLImageElement): Result<number[], string> {
   if (canvas === null || ctx === null)
     throw new Error("Canvas/Ctx not initialized");
 
+  ctx.imageSmoothingEnabled = true;
+
   ctx.drawImage(image, 0, 0, image.width, image.height);
 
   const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height).data;
@@ -571,6 +572,8 @@ function draw(
   colors: PaletteColor[],
   images: UserImage[],
 ) {
+
+
   for (const image of images) {
     // Create the pixels for the image by mapping the image indices with the chosen colors.
 
@@ -593,6 +596,7 @@ function draw(
       newPixels[rIdx + 1] = rgb[1];
       newPixels[rIdx + 2] = rgb[2];
       newPixels[rIdx + 3] = 255;
+
     }
 
     const imageData = new ImageData(
@@ -611,5 +615,6 @@ function draw(
     offCtx.putImageData(imageData, 0, 0);
 
     ctx.drawImage(canvasOff, image.pos.x, image.pos.y);
+
   }
 }
